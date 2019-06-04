@@ -1,10 +1,21 @@
 <?php
 
-include_once 'StringUtils.php';
-include_once 'TagModel.php';
+include_once 'HtmlToEmmetConverter.php';
 
-$text = "text";
 
-$model = new TagModel($text);
-var_dump($model);
+$text = "<div>
+    <header>
+        <ul>
+            <li><a href=\"\"></a></li>
+            <li><a href=\"\"></a></li>
+        </ul>
+    </header>
+    <footer>
+        <p></p>
+    </footer>
+</div>";
+
+$converter = new HtmlToEmmetConverter($text);
+
+echo $converter->convert();
 

@@ -12,8 +12,10 @@ class StringUtils
      */
     public static function getInnerTextOfTag($tagName, $startingIndex, &$string): string
     {
-        if(is_null($tagName)) {
-            return $string;
+        if (is_null($tagName)) {
+            $result = $string;
+            $string = "";
+            return $result;
         }
 
         $length = strlen($string);
@@ -33,7 +35,7 @@ class StringUtils
 
                 if ($sameInnerTags == -1) {
                     $result = self::subString($string, $startingIndex, $index);
-                    $string = self::subString($string, $index, $length);
+                    $string = self::subString($string, $index + strlen($tagName) + 3, $length);
                     return $result;
                 }
             }
@@ -45,8 +47,8 @@ class StringUtils
     {
         $lengthLeft = strlen($left);
         $lengthRight = strlen($right);
-        $currentLeft = '';
-        $currentRight = '';
+        $currentLeft = "";
+        $currentRight = "";
         $index = 0;
 
         while ($index + $startLeft < $lengthLeft && $index + $startRight < $lengthRight) {
@@ -58,7 +60,7 @@ class StringUtils
             }
 
             if ($currentLeft != $currentRight) {
-                if ($currentLeft - $currentRight > 0) {
+                if ((int)$currentLeft - (int)$currentRight > 0) {
                     return 1;
                 }
                 return -1;
@@ -105,10 +107,10 @@ class StringUtils
         for ($index = 0; $index < $length; ++$index) {
             $current = $tag[$index];
 
-            if ($current != ' ' && $current != '=') {
+            if (!self::isWhitespace($current) && $current != '=') {
                 $currentKey .= $current;
             } else {
-                while ($index < $length && $current == ' ') {
+                while ($index < $length && self::isWhitespace($current)) {
                     $current = $tag[$index];
                     $index++;
                 }
@@ -118,8 +120,8 @@ class StringUtils
                     $numberOfQuestionMarks = 0;
 
                     $index++;
-                    $current = $tag[$index];
                     while ($numberOfQuestionMarks != 2 && $index < $length) {
+                        $current = $tag[$index];
                         if ($current == '"' && $tag[$index - 1] != '\\') {
                             $numberOfQuestionMarks++;
                         } else if ($numberOfQuestionMarks == 1) {
@@ -127,19 +129,18 @@ class StringUtils
                         }
 
                         $index++;
-                        $current = $tag[$index];
                     }
                     $items[$currentKey] = $value;
                 } else if ($currentKey != "") {
-                    if(!$hasAddedNameTag) {
+                    if (!$hasAddedNameTag) {
                         $items[0] = $currentKey;
                     } else {
                         $items[$currentKey] = null;
                     }
                     $index -= 2;
                 } else {
-                    if ($current == " ") {
-                        while ($index < $length && ($current = $tag[$index]) == ' ') {
+                    if (StringUtils::isWhitespace($current)) {
+                        while ($index < $length && self::isWhitespace($current = $tag[$index])) {
                             $index++;
                         }
                     } else {
@@ -152,7 +153,7 @@ class StringUtils
         }
 
         if ($currentKey != "") {
-            $items[$currentKey] = null;
+            $items[0] = $currentKey;
         }
 
         return $items;
@@ -165,7 +166,7 @@ class StringUtils
         $foundTag = false;
 
         for ($index = 0; $index < $length && $string[$index] != '>'; ++$index) {
-            if($index + 1 < $length && $string[$index] == '/' && $string[$index + 1] == '>') {
+            if ($index + 1 < $length && $string[$index] == '/' && $string[$index + 1] == '>') {
                 break;
             }
 
@@ -173,9 +174,9 @@ class StringUtils
                 $tag .= $string[$index];
             }
 
-            if($string[$index] == '<') {
+            if ($string[$index] == '<') {
                 $foundTag = true;
-                if($index + 1 < $length && $string[$index + 1] == '/') {
+                if ($index + 1 < $length && $string[$index + 1] == '/') {
                     $index++;
                 }
             }
@@ -185,21 +186,62 @@ class StringUtils
         return $tag;
     }
 
-    public static function isTextOnly($string) : bool {
+    public static function isTextOnly($string): bool
+    {
         return strpos($string, '<') === false;
     }
 
-    public static function squeezeString($string, $sequence) {
+    public static function squeezeString($string, $sequence)
+    {
         $index = 0;
         $length = strlen($string);
         $lengthSequence = strlen($sequence);
         $hasAdded = false;
 
-        while($index < $length) {
-            $result = self::compareStrings($string,$sequence,$index,0,$lengthSequence);
-            if($result == 0 && !$hasAdded) {
+        while ($index < $length) {
+            $result = self::compareStrings($string, $sequence, $index, 0, $lengthSequence);
+            if ($result == 0 && !$hasAdded) {
 
             }
         }
+    }
+
+    public static function isWhitespace($char): bool
+    {
+        return ctype_space($char);
+    }
+
+    public static function hasContentBeforeTag($string): bool
+    {
+        for ($index = 0; $index < strlen($string) && $string[$index] != '<'; ++$index) {
+            if(!self::isWhitespace($string[$index])) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static function whitespacesBeforeTag($string) : int {
+        $counter = 0;
+        for ($index = 0; $index < strlen($string) && $string[$index] != '<'; ++$index) {
+            if(!self::isWhitespace($string[$index])) {
+                return $counter;
+            }
+            $counter++;
+        }
+        return $counter;
+    }
+
+    public static function removeFirstWhitespaces($string) : string {
+        for ($index = 0; $index < strlen($string); ++$index) {
+            if(!self::isWhitespace($string[$index])) {
+                return self::subString($string, $index, strlen($string));
+            }
+        }
+        if(self::isWhitespace($string)) {
+            return "";
+        }
+
+        return $string;
     }
 }
