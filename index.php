@@ -3,17 +3,11 @@
 include_once 'HtmlToEmmetConverter.php';
 
 
-$text = "<div>
-    <header>
-        <ul>
-            <li><a href=\"\"></a></li>
-            <li><a href=\"\"></a></li>
-        </ul>
-    </header>
-    <footer>
-        <p></p>
-    </footer>
-</div>";
+$text = "<table>
+    <tr class=\"row\">
+        <td class=\"col\"></td>
+    </tr>
+</table>";
 
 $converter = new HtmlToEmmetConverter($text);
 

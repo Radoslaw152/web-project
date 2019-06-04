@@ -14,8 +14,15 @@ class HtmlToEmmetConverter
 
     public function convert(): string
     {
-        $parent = new TagModel($this->htmlText);
-        return $this->generateEmmet($parent);
+        $children = array();
+
+        while($this->htmlText != "") {
+            $child = new TagModel($this->htmlText);
+            $emmetChild = $this->generateEmmet($child);
+            array_push($children,$emmetChild);
+        }
+
+        return $this->combineChildren($children);
     }
 
     private function generateEmmet(TagModel $tagModel): string
@@ -33,7 +40,7 @@ class HtmlToEmmetConverter
                 $emmet .= "#" . $attributes[$key];
             } else if ($key == "class") {
                 $tagContent = $attributes[$key];
-                $trimContent = "";
+                $trimContent = ".";
                 $hasAddedDot = false;
                 $removeStartingSpaces = false;
 
@@ -74,13 +81,21 @@ class HtmlToEmmetConverter
         while ($content != "") {
             $child = new TagModel($content);
             $childEmmet = $this->generateEmmet($child);
-
             array_push($innerEmmets, $childEmmet);
         }
 
         if (sizeof($innerEmmets) > 0) {
             $emmet .= ">";
         }
+
+
+        return $emmet . $this->combineChildren($innerEmmets);
+    }
+
+    private function combineChildren($innerEmmets): string
+    {
+        $emmet = "";
+
 
         for ($index = 0; $index < sizeof($innerEmmets); ++$index) {
             $counter = 0;
@@ -97,8 +112,8 @@ class HtmlToEmmetConverter
             --$index;
 
             if ($index + 1 < sizeof($innerEmmets)) {
-                if($this->hasMoreThanOneChild($currentEmmet)) {
-                    $currentEmmet = "(".$currentEmmet.")";
+                if ($this->hasMoreThanOneChild($currentEmmet)) {
+                    $currentEmmet = "(" . $currentEmmet . ")";
                 }
                 $currentEmmet .= "+";
             }
@@ -106,7 +121,6 @@ class HtmlToEmmetConverter
 
             $emmet .= $currentEmmet;
         }
-
 
         return $emmet;
     }
@@ -117,7 +131,7 @@ class HtmlToEmmetConverter
         for ($index = 0; $index < strlen($emmet); ++$index) {
             $current = $emmet[$index];
 
-            if($current == '(') {
+            if ($current == '(') {
                 $nestedLevel++;
             } else if ($current == ')') {
                 $nestedLevel--;
