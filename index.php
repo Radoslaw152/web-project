@@ -3,11 +3,15 @@
 include_once 'HtmlToEmmetConverter.php';
 
 
-$text = "<table>
-    <tr class=\"row\">
-        <td class=\"col\"></td>
-    </tr>
-</table>";
+$text = "
+<html lang=3>
+<head>
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+</html>";
 
 $converter = new HtmlToEmmetConverter($text);
 

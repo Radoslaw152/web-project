@@ -120,6 +120,7 @@ class StringUtils
                     $numberOfQuestionMarks = 0;
 
                     $index++;
+                    $saveIndex = $index;
                     while ($numberOfQuestionMarks != 2 && $index < $length) {
                         $current = $tag[$index];
                         if ($current == '"' && $tag[$index - 1] != '\\') {
@@ -130,6 +131,21 @@ class StringUtils
 
                         $index++;
                     }
+
+                    if ($value == "") {
+                        $index = $saveIndex;
+                        $current = $tag[$index];
+                        while (self::isWhitespace($current) && $index < $length) {
+                            ++$index;
+                            $current = $tag[$index];
+                        }
+                        while (!self::isWhitespace($current) && $index < $length) {
+                            $current = $tag[$index];
+                            $value .= $current;
+                            ++$index;
+                        }
+                    }
+
                     $items[$currentKey] = $value;
                 } else if ($currentKey != "") {
                     if (!$hasAddedNameTag) {
@@ -214,17 +230,18 @@ class StringUtils
     public static function hasContentBeforeTag($string): bool
     {
         for ($index = 0; $index < strlen($string) && $string[$index] != '<'; ++$index) {
-            if(!self::isWhitespace($string[$index])) {
+            if (!self::isWhitespace($string[$index])) {
                 return true;
             }
         }
         return false;
     }
 
-    public static function whitespacesBeforeTag($string) : int {
+    public static function whitespacesBeforeTag($string): int
+    {
         $counter = 0;
         for ($index = 0; $index < strlen($string) && $string[$index] != '<'; ++$index) {
-            if(!self::isWhitespace($string[$index])) {
+            if (!self::isWhitespace($string[$index])) {
                 return $counter;
             }
             $counter++;
@@ -232,13 +249,14 @@ class StringUtils
         return $counter;
     }
 
-    public static function removeFirstWhitespaces($string) : string {
+    public static function removeFirstWhitespaces($string): string
+    {
         for ($index = 0; $index < strlen($string); ++$index) {
-            if(!self::isWhitespace($string[$index])) {
+            if (!self::isWhitespace($string[$index])) {
                 return self::subString($string, $index, strlen($string));
             }
         }
-        if(self::isWhitespace($string)) {
+        if (self::isWhitespace($string)) {
             return "";
         }
 

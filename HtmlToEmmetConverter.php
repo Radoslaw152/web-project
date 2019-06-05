@@ -1,11 +1,15 @@
 <?php
 include_once 'StringUtils.php';
 include_once 'TagModel.php';
+include_once 'EmmetType.php';
 
 class HtmlToEmmetConverter
 {
 
     private $htmlText;
+
+    private $nullEmmet = "NULL";
+
 
     public function __construct($htmlText)
     {
@@ -16,10 +20,10 @@ class HtmlToEmmetConverter
     {
         $children = array();
 
-        while($this->htmlText != "") {
+        while ($this->htmlText != "") {
             $child = new TagModel($this->htmlText);
             $emmetChild = $this->generateEmmet($child);
-            array_push($children,$emmetChild);
+            array_push($children, $emmetChild);
         }
 
         return $this->combineChildren($children);
@@ -28,8 +32,12 @@ class HtmlToEmmetConverter
     private function generateEmmet(TagModel $tagModel): string
     {
         if (is_null($tagModel->getName())) {
+            if ($tagModel->getContent() == "") {
+                return $this->nullEmmet;
+            }
             return "{" . $tagModel->getContent() . "}";
         }
+
 
         $emmet = $tagModel->getName();
         $attributes = $tagModel->getAttributes();
@@ -65,8 +73,13 @@ class HtmlToEmmetConverter
                 }
 
                 $customAttributes .= $key;
+
                 if (!is_null($attributes[$key])) {
-                    $customAttributes .= "=" . $attributes[$key];
+                    $value = $attributes[$key];
+                    if (preg_match("/.*[^0-9].*/", $value) == 1) {
+                        $value = "\"" . $value . "\"";
+                    }
+                    $customAttributes .= "=" . $value;
                 }
             }
         }
@@ -76,12 +89,22 @@ class HtmlToEmmetConverter
 
 
         $content = $tagModel->getContent();
+
+        if(in_array($content, EmmetType::$NOT_PARSE_CONTENT)) {
+            if ($content == "") {
+                return $this->nullEmmet;
+            }
+            return ">{" . $content . "}";
+        }
+
         $innerEmmets = array();
 
         while ($content != "") {
             $child = new TagModel($content);
             $childEmmet = $this->generateEmmet($child);
-            array_push($innerEmmets, $childEmmet);
+            if ($childEmmet != $this->nullEmmet) {
+                array_push($innerEmmets, $childEmmet);
+            }
         }
 
         if (sizeof($innerEmmets) > 0) {
