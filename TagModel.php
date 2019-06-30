@@ -19,10 +19,14 @@ class TagModel
             } else {
                 $this->name = null;
             }
-            $this->content = StringUtils::getInnerTextOfTag($this->name,
-                strlen($tagAttributes) + 2,
-                $string);
-            $string = StringUtils::removeFirstWhitespaces($string);
+            if(in_array($this->name, EmmetType::$ONE_TAG_ONLY)) {
+                $string = StringUtils::subString($string, strlen($tagAttributes) + 2)
+            } else {
+                $this->content = StringUtils::getInnerTextOfTag($this->name,
+                    strlen($tagAttributes) + 2,
+                    $string);
+                $string = StringUtils::removeFirstWhitespaces($string);
+            }
         } else {
             $this->name = null;
             $this->attributes = array();

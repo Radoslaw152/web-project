@@ -175,8 +175,11 @@ class StringUtils
         return $items;
     }
 
-    public static function getFirstTagAndAttributes($string): string
+    public static function getFirstTagAndAttributes($string) : string
     {
+
+
+
         $tag = "";
         $length = strlen($string);
         $foundTag = false;

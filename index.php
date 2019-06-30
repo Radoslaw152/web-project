@@ -5,6 +5,7 @@ include_once 'HtmlToEmmetConverter.php';
 
 $text = "
 <html lang=3>
+</meta>
 <head>
     <title>Title</title>
 </head>
