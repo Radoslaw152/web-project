@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Html 2 Emmet</title>
+    <script defer src='dom.js'></script>
+</head>
+<body>
+<main>
+    <section>
+        <label for="inputHtmlText">Моля, въведете HTML текст: </label>
+        <textarea id="inputHtmlText" name="inputHtmlText"></textarea>
+        <button id="convertByHtmlText" name="convertByHtmlText">Convert to Emmet from HTML text</button>
+        <label for="inputFile">Моля, въведете файл: </label>
+        <input id="inputFile" accept="*/*" type="file" name="inputFile">
+        <button id="convertByFile">Convert to Emmet from file</button>
+        <p class="errorFiled" id="exitMessage"></p>
+        <label for="emmetField">Преобразуваният html в emmet: </label>
+        <textarea id="emmetField" readonly></textarea>
+    </section>
+</main>
+</body>
+</html>
