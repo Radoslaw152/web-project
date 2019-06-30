@@ -10,7 +10,6 @@ class HtmlToEmmetConverter
 
     private $nullEmmet = "NULL";
 
-
     public function __construct($htmlText)
     {
         $this->htmlText = $htmlText;
@@ -81,7 +80,7 @@ class HtmlToEmmetConverter
 
                 if (!is_null($attributes[$key]) && $attributes[$key] != "\"\"") {
                     $value = $attributes[$key];
-                    if (preg_match("/.*[^0-9].*/", $value) == 1) {
+                    if (preg_match("/.*[0-9].*/", $value) == 1) {
                         $value = "\"" . $value . "\"";
                     }
                     $customAttributes .= "=" . $value;

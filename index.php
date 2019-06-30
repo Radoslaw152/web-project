@@ -1,20 +1,6 @@
 <?php
 
-include_once 'HtmlToEmmetConverter.php';
+include_once 'RestAPI.php';
 
-
-$text = "
-<html lang=3>
-
-<head>
-    <title>Title</title>
-</head>
-<body>
-
-</body>
-</html>";
-
-$converter = new HtmlToEmmetConverter($text);
-
-echo $converter->convert();
-
+$restApi = new RestAPI();
+$restApi->run();
