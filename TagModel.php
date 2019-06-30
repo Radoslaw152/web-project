@@ -13,19 +13,31 @@ class TagModel
             $string = StringUtils::removeFirstWhitespaces($string);
             $tagAttributes = StringUtils::getFirstTagAndAttributes($string);
             $this->attributes = StringUtils::trimTagContent($tagAttributes);
+
             if (sizeof($this->attributes) != 0) {
                 $this->name = $this->attributes[0];
                 unset($this->attributes[0]);
             } else {
                 $this->name = null;
             }
-            if(in_array($this->name, EmmetType::$ONE_TAG_ONLY)) {
-                $string = StringUtils::subString($string, strlen($tagAttributes) + 2)
+
+            if (in_array($this->name, EmmetType::$ONE_TAG_ONLY)) {
+                $numberOfBrackets = 1;
+                if ($string[1] == '/') {
+                    $numberOfBrackets++;
+                }
+                if($string[$numberOfBrackets + strlen($tagAttributes)] == '/') {
+                    $numberOfBrackets++;
+                }
+
+                $string = StringUtils::subString($string,
+                    strlen($tagAttributes) + $numberOfBrackets + 1,
+                    strlen($string));
+                $this->content = "";
             } else {
                 $this->content = StringUtils::getInnerTextOfTag($this->name,
                     strlen($tagAttributes) + 2,
                     $string);
-                $string = StringUtils::removeFirstWhitespaces($string);
             }
         } else {
             $this->name = null;

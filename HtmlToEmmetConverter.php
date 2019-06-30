@@ -29,6 +29,11 @@ class HtmlToEmmetConverter
         return $this->combineChildren($children);
     }
 
+    public function setHtmlText(string $htmlText): void
+    {
+        $this->htmlText = $htmlText;
+    }
+
     private function generateEmmet(TagModel $tagModel): string
     {
         if (is_null($tagModel->getName())) {
@@ -74,7 +79,7 @@ class HtmlToEmmetConverter
 
                 $customAttributes .= $key;
 
-                if (!is_null($attributes[$key])) {
+                if (!is_null($attributes[$key]) && $attributes[$key] != "\"\"") {
                     $value = $attributes[$key];
                     if (preg_match("/.*[^0-9].*/", $value) == 1) {
                         $value = "\"" . $value . "\"";
@@ -90,7 +95,7 @@ class HtmlToEmmetConverter
 
         $content = $tagModel->getContent();
 
-        if(in_array($content, EmmetType::$NOT_PARSE_CONTENT)) {
+        if (in_array($content, EmmetType::$NOT_PARSE_CONTENT)) {
             if ($content == "") {
                 return $this->nullEmmet;
             }
@@ -98,6 +103,7 @@ class HtmlToEmmetConverter
         }
 
         $innerEmmets = array();
+        $hasContent = false;
 
         while ($content != "") {
             $child = new TagModel($content);
@@ -105,9 +111,13 @@ class HtmlToEmmetConverter
             if ($childEmmet != $this->nullEmmet) {
                 array_push($innerEmmets, $childEmmet);
             }
+            if(preg_match("/^{.*/",$childEmmet)) {
+                $hasContent = true;
+            }
         }
 
-        if (sizeof($innerEmmets) > 0) {
+        if (sizeof($innerEmmets) > 0 &&
+            !(sizeof($innerEmmets) == 1 && $hasContent)) {
             $emmet .= ">";
         }
 
@@ -130,7 +140,7 @@ class HtmlToEmmetConverter
             }
 
             if ($counter > 1) {
-                $currentEmmet .= "*" . $counter;
+                $currentEmmet = StringUtils::addAfterFirstMatchOrAtEnd($currentEmmet, ">", "*" . $counter);
             }
             --$index;
 

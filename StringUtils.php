@@ -8,7 +8,7 @@ class StringUtils
      * @param $tagName - tag name itself - without opening and closing symbol
      * @param $startingIndex - the first index after the opening of the tag in $string
      * @param $string - the whole string
-     * @return string - the inner text of the $tag in $string
+     * @return string - he inner text of the $tag in $string
      */
     public static function getInnerTextOfTag($tagName, $startingIndex, &$string): string
     {
@@ -175,11 +175,8 @@ class StringUtils
         return $items;
     }
 
-    public static function getFirstTagAndAttributes($string) : string
+    public static function getFirstTagAndAttributes($string): string
     {
-
-
-
         $tag = "";
         $length = strlen($string);
         $foundTag = false;
@@ -264,5 +261,19 @@ class StringUtils
         }
 
         return $string;
+    }
+
+    public static function addAfterFirstMatchOrAtEnd($string, $oldSubString, $newSubString): string
+    {
+        $length = strlen($string);
+
+        for ($index = 0; $index < $length; ++$index) {
+            if (self::compareStrings($string, $oldSubString, $index, 0, "") == 0) {
+                $left = self::subString($string, 0, $index);
+                $right = self::subString($string, $index, $length);
+                return $left . $newSubString . $right;
+            }
+        }
+        return $string . $newSubString;
     }
 }
