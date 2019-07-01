@@ -150,6 +150,7 @@ class StringUtils
                 } else if ($currentKey != "") {
                     if (!$hasAddedNameTag) {
                         $items[0] = $currentKey;
+                        $hasAddedNameTag = true;
                     } else {
                         $items[$currentKey] = null;
                     }
