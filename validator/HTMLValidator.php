@@ -1,7 +1,7 @@
 <?php
 
-include_once 'StringUtils.php';
-include_once 'EmmetType.php';
+require_once 'utils/StringUtils.php';
+require_once 'models/EmmetType.php';
 
 class HTMLValidator
 {

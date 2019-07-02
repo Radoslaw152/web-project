@@ -1,5 +1,5 @@
 <?php
-require_once '..\HtmlToEmmetConverter.php';
+require_once '..\converter\HtmlToEmmetConverter.php';
 use PHPUnit\Framework\TestCase;
 
 class HtmlToEmmetConverterTest extends TestCase

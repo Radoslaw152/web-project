@@ -1,7 +1,7 @@
 <?php
-require_once 'HtmlToEmmetConverter.php';
-require_once 'ErrorMessage.php';
-require_once 'HTMLValidator.php';
+require_once 'converter/HtmlToEmmetConverter.php';
+require_once 'errors/ErrorMessage.php';
+require_once 'validator/HTMLValidator.php';
 
 class ConverterExecutor
 {

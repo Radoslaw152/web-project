@@ -1,6 +1,6 @@
 <?php
 
-require_once '..\HTMLValidator.php';
+require_once '..\validator\HTMLValidator.php';
 
 use PHPUnit\Framework\TestCase;
 

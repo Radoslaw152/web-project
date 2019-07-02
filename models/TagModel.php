@@ -1,5 +1,5 @@
 <?php
-include_once 'StringUtils.php';
+require_once 'utils/StringUtils.php';
 
 class TagModel
 {

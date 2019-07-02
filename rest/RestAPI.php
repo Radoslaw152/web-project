@@ -1,5 +1,5 @@
 <?php
-require_once 'ErrorMessage.php';
+require_once 'errors/ErrorMessage.php';
 require_once 'ConverterExecutor.php';
 
 class RestAPI

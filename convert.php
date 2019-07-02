@@ -1,6 +1,6 @@
 <?php
 
-include_once 'RestAPI.php';
+require_once 'rest/RestAPI.php';
 
 $restApi = new RestAPI();
 $restApi->run();
