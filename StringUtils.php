@@ -225,7 +225,7 @@ class StringUtils
 
     public static function isWhitespace($char): bool
     {
-        return ctype_space($char);
+        return ctype_space($char) || $char == '\n';
     }
 
     public static function hasContentBeforeTag($string): bool
@@ -276,5 +276,16 @@ class StringUtils
             }
         }
         return $string . $newSubString;
+    }
+
+    public static function goToFirstBracket($string) {
+        $index = 0;
+        while($index < strlen($string) && $string[$index] != '<' ) {
+            $index++;
+        }
+        if($index == strlen($string)) {
+            return null;
+        }
+        return self::subString($string,$index, strlen($string));
     }
 }

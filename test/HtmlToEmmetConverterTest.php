@@ -88,7 +88,7 @@ class HtmlToEmmetConverterTest extends TestCase
         $htmlText = '<td rowspan="2" colspan="3" title=""></td>';
         $converter->setHtmlText($htmlText);
         $result = $converter->convert();
-        $expected = "td[rowspan=2 colspan=3 title]";
+        $expected = "td[rowspan=\"2\" colspan=\"3\" title]";
         self::assertEquals($expected, $result);
 
         $htmlText = '<div a="value1" b="value2"></div>';
