@@ -5,17 +5,12 @@ include_once 'EmmetType.php';
 
 class HTMLValidator
 {
-    private $content;
-
-    public function __construct(string $content)
-    {
-        $this->content = $content;
-    }
 
     public function validatePart(string $part): bool
     {
         $part = StringUtils::removeFirstWhitespaces($part);
         $tags = array();
+        $part = StringUtils::goToFirstBracket($part);
         while ($part != "") {
             $tag = $this->isValidTag($part);
             if (is_null($tag)) {
@@ -40,7 +35,10 @@ class HTMLValidator
 
             if (key_exists($modifiedNameTag, $tags)) {
                 $tags[$modifiedNameTag] += $toAdd;
-            } else {
+            } else  {
+                if ($toAdd == -1 && !in_array($tag, EmmetType::$ONE_TAG_ONLY)) {
+                    return false;
+                }
                 $tags[$modifiedNameTag] = 1;
             }
             $part = StringUtils::goToFirstBracket($part);
@@ -48,7 +46,7 @@ class HTMLValidator
 
         foreach (array_keys($tags) as $tag) {
             $times = $tags[$tag];
-            if ($times % 2 != 0 && !in_array($tag, EmmetType::$ONE_TAG_ONLY)) {
+            if ($times != 0 && !in_array($tag, EmmetType::$ONE_TAG_ONLY)) {
                 return false;
             }
         }
@@ -56,7 +54,7 @@ class HTMLValidator
     }
 
     private
-    function isValidTag(string &$part): string
+    function isValidTag(string &$part)
     {
         $changed = "";
         $brackets = 0;
@@ -107,7 +105,7 @@ class HTMLValidator
     }
 
     private
-    static function checkInnerTag($tag): string
+    static function checkInnerTag($tag)
     {
         $elements = StringUtils::trimTagContent($tag);
         if (sizeof($elements) == 0 || $elements[0] == "") {

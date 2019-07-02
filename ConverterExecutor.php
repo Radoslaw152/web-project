@@ -1,5 +1,7 @@
 <?php
 require_once 'HtmlToEmmetConverter.php';
+require_once 'ErrorMessage.php';
+require_once 'HTMLValidator.php';
 
 class ConverterExecutor
 {
@@ -8,9 +10,16 @@ class ConverterExecutor
     public function exec()
     {
         $requestBody = file_get_contents('php://input');
-        $htmlObject = json_decode($requestBody);
-        $this->html2EmmetConverter = new HtmlToEmmetConverter($htmlObject->htmlText);
+        $htmlText = json_decode($requestBody)->htmlText;
 
-        echo $this->html2EmmetConverter->convert();
+        $htmlValidator = new HTMLValidator();
+        if($htmlValidator->validatePart($htmlText) == false) {
+            ErrorMessage::sendMessage(403, "The current HTML text isn't valid.");
+        }
+
+        $this->html2EmmetConverter = new HtmlToEmmetConverter($htmlText);
+        $result = $this->html2EmmetConverter->convert();
+
+        echo "{ \"emmet\" : \"" . $result . "\" }";
     }
 }

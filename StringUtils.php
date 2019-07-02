@@ -170,7 +170,11 @@ class StringUtils
         }
 
         if ($currentKey != "") {
-            $items[0] = $currentKey;
+            if(key_exists(0,$items)) {
+                $items[$currentKey] = null;
+            } else {
+                $items[0] = $currentKey;
+            }
         }
 
         return $items;

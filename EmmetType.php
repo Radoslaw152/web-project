@@ -8,7 +8,6 @@ class EmmetType
         "br",
         "area",
         "base",
-        "br",
         "col",
         "embed",
         "hr",
@@ -18,7 +17,8 @@ class EmmetType
         "param",
         "source",
         "track",
-        "wbr"
+        "wbr",
+        "!DOCTYPE"
     );
 
     public static $NOT_PARSE_CONTENT = array(
