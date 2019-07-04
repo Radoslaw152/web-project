@@ -2,6 +2,7 @@
 require_once 'converter/HtmlToEmmetConverter.php';
 require_once 'errors/ErrorMessage.php';
 require_once 'validator/HTMLValidator.php';
+require_once 'models/EmmetRestModel.php';
 
 class ConverterExecutor
 {
@@ -20,6 +21,6 @@ class ConverterExecutor
         $this->html2EmmetConverter = new HtmlToEmmetConverter($htmlText);
         $result = $this->html2EmmetConverter->convert();
 
-        echo "{ \"emmet\" : \"" . $result . "\" }";
+        echo json_encode(new EmmetRestModel($result));
     }
 }

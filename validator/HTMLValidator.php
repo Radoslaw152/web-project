@@ -10,9 +10,19 @@ class HTMLValidator
     {
         $part = StringUtils::removeFirstWhitespaces($part);
         $tags = array();
+        $old = $part;
         $part = StringUtils::goToFirstBracket($part);
+        if ($part == "" && $old != "") {
+            for($index = 0; $index < strlen($old);++$index) {
+                $current = $old[$index];
+                if($current == '<' || $current == '>') {
+                    return false;
+                }
+            }
+            return true;
+        }
         while ($part != "") {
-            $tag = $this->isValidTag($part);
+            $tag = self::isValidTag($part);
             if (is_null($tag)) {
                 return false;
             }
@@ -28,14 +38,14 @@ class HTMLValidator
             }
             $modifiedNameTag = "";
             for ($index = 0; $index < strlen($nameTag); ++$index) {
-                if($nameTag[$index] != '/') {
+                if ($nameTag[$index] != '/') {
                     $modifiedNameTag .= $nameTag[$index];
                 }
             }
 
             if (key_exists($modifiedNameTag, $tags)) {
                 $tags[$modifiedNameTag] += $toAdd;
-            } else  {
+            } else {
                 if ($toAdd == -1 && !in_array($tag, EmmetType::$ONE_TAG_ONLY)) {
                     return false;
                 }
@@ -50,11 +60,10 @@ class HTMLValidator
                 return false;
             }
         }
-        return true;
+        return sizeof($tags) > 0;
     }
 
-    private
-    function isValidTag(string &$part)
+    private function isValidTag(string &$part)
     {
         $changed = "";
         $brackets = 0;

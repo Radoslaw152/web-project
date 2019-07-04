@@ -229,7 +229,7 @@ class StringUtils
 
     public static function isWhitespace($char): bool
     {
-        return ctype_space($char) || $char == '\n';
+        return ctype_space($char);
     }
 
     public static function hasContentBeforeTag($string): bool
